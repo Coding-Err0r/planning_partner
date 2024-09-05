@@ -40,7 +40,7 @@ const DatePicker = ({ htmlFor, label, placeholder, _onChange }: Props) => {
     <div className="relative z-0 lg:px-2 w-full group  flex flex-col">
       <label
         htmlFor={htmlFor}
-        className="font-mono uppercase font-medium text-lg text-gray-800 dark:text-gray-300 bg-white relative px-1 top-2 left-0 w-fit group-focus-within:text-gray-600"
+        className="font-mono uppercase font-semibold text-base text-gray-800 dark:text-gray-300 bg-white relative px-1 top-2 left-0 w-fit group-focus-within:text-gray-600"
       >
         {label}
       </label>
@@ -54,7 +54,7 @@ const DatePicker = ({ htmlFor, label, placeholder, _onChange }: Props) => {
           >
             {value ? format(value, "PPP") : <span>{placeholder}</span>}
 
-            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+            <CalendarIcon className="ml-auto h-4 w-4 opacity-50 mr-2" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">

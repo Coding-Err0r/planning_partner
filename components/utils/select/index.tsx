@@ -32,7 +32,7 @@ const CustomSelect = ({
     <div className="relative z-0 lg:px-2 w-full group">
       <label
         htmlFor={htmlFor}
-        className="font-mono uppercase font-medium text-lg text-gray-800 dark:text-gray-300 bg-white relative px-1 top-2 left-0 w-auto group-focus-within:text-gray-600"
+        className="font-mono uppercase font-semibold text-base text-gray-800 dark:text-gray-300 bg-white relative px-1 top-2 left-0 w-auto group-focus-within:text-gray-600"
       >
         {label}
       </label>
