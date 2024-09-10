@@ -12,7 +12,7 @@ const FamilyInformation = () => {
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="lg:text-2xl text-md">Spouse/Partner</h1>
-          <SaveButton />
+          <SaveButton _onSubmit={() => console.log("Clicked")} />
         </div>
         <hr className=" h-0.5 border-t-0 bg-neutral-200  w-full my-3" />
       </div>
@@ -62,7 +62,7 @@ const FamilyInformation = () => {
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="lg:text-2xl text-md">Spouse/Partner</h1>
-          <SaveButton />
+          <SaveButton _onSubmit={() => console.log("Clicked")} />
         </div>
         <hr className=" h-0.5 border-t-0 bg-neutral-200  w-full my-3" />
         <button className="flex items-center space-x-4 border-[#2aa87e] border p-4 rounded-sm text-[#2aa87e] hover:bg-[#2aa87e] hover:text-white">
@@ -73,7 +73,7 @@ const FamilyInformation = () => {
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="lg:text-2xl text-md">Important Dates</h1>
-          <SaveButton />
+          <SaveButton _onSubmit={() => console.log("Clicked")} />
         </div>
         <hr className=" h-0.5 border-t-0 bg-neutral-200  w-full my-3" />
         <button className="flex items-center space-x-4 border-[#2aa87e] border p-4 rounded-sm text-[#2aa87e] hover:bg-[#2aa87e] hover:text-white">

@@ -5,40 +5,98 @@ import SaveButton from "@/components/utils/save-button";
 import CustomSelect from "@/components/utils/select";
 import { data } from "@/config/data";
 import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
+type PersonalInformationInput = {
+  firstName: string;
+  lastName: string;
+  gender: string;
+  dateOfBirth: string;
+  socialSecurityNumber: string;
+  servicePreferences: string;
+  contactMethod: string;
+  emailAddress: string;
+  phoneNumber: string;
+  referralSource: string;
+};
 const BasicInfo = () => {
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
+
+  const [personalInformationData, setPersonalInformationData] =
+    useState<PersonalInformationInput>();
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<PersonalInformationInput>({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      gender: "",
+      dateOfBirth: "",
+      socialSecurityNumber: "",
+      servicePreferences: "",
+      contactMethod: "",
+      emailAddress: "",
+      phoneNumber: "",
+      referralSource: "",
+    },
+  });
+
+  const processPersonalInformationForm: SubmitHandler<
+    PersonalInformationInput
+  > = (data) => {
+    setPersonalInformationData(data);
+    console.log(data);
+  };
+
   return (
     <div className="flex flex-col lg:space-y-12 space-y-4">
+      <p>Data</p>
+      <p>{JSON.stringify(personalInformationData)}</p>
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="lg:text-2xl text-md">Personal Information</h1>
-          <SaveButton />
+          <SaveButton
+            _onSubmit={handleSubmit(processPersonalInformationForm)}
+          />
         </div>
         <hr className=" h-0.5 border-t-0 bg-neutral-200  w-full my-3" />
       </div>
-      <div className="md:grid 2xl:grid-cols-5 md:grid-cols-2 lg:grid-cols-3 md:gap-2 md:items-start">
+      <form className="md:grid 2xl:grid-cols-5 md:grid-cols-2 lg:grid-cols-3 md:gap-2 md:items-start">
         <CustomInput
           htmlFor={"firstname"}
           label={"FIRST NAME"}
           placeholder={"First Name"}
           type={"text"}
-          name={"firstname"}
-          _onChange={(value: any) => console.log("Input value:", value)}
+          {...register("firstName", { required: "First Name is required" })}
+          _onChange={
+            (value: any) => {}
+            // setFormData((prevFormData) => ({
+            //   ...prevFormData,
+            //   lastName: value,
+            // }))
+          }
         />
         <CustomInput
           htmlFor={"lastname"}
           label={"LAST NAME"}
           placeholder={"Last Name"}
           type={"text"}
-          name={"lastname"}
-          _onChange={(value: any) => console.log("Input value:", value)}
+          _onChange={(value: any) => (value: any) => {}}
         />
         <CustomSelect
           htmlFor={"gender"}
           label={"GENDER"}
           placeholder={"Select Gender"}
-          _onChange={(value: any) => console.log("Selected value:", value)}
+          _onChange={(value: any) =>
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              gender: value,
+            }))
+          }
           selectLabel={"Select Gender"}
           data={[
             {
@@ -59,21 +117,26 @@ const BasicInfo = () => {
           htmlFor={"date_of_birth"}
           label={"DATE OF BIRTH"}
           placeholder={"October 18. 1992"}
-          _onChange={(value) => console.log("Input value:", value)}
+          _onChange={
+            (value: any) => (value: any) => {}
+            // setFormData((prevFormData) => ({
+            //   ...prevFormData,
+            //   dateOfBirth: new Date(value).toLocaleDateString("en-US"),
+            // }))
+          }
         />
         <CustomInput
           htmlFor={"social_security"}
           label={"SOCIAL SECURITY NUMBER"}
           placeholder={"987 65 4321"}
           type={"text"}
-          name={"social_security"}
-          _onChange={(value: any) => console.log("Input value:", value)}
+          _onChange={(value: any) => (value: any) => {}}
         />
         <CustomSelect
           htmlFor={"service"}
           label={"SERVICE PREFERENCE"}
           placeholder={"Regular Policy Reviews"}
-          _onChange={(value: any) => console.log("Selected value:", value)}
+          _onChange={(value: any) => (value: any) => {}}
           selectLabel={"Select Service"}
           data={[
             {
@@ -94,7 +157,7 @@ const BasicInfo = () => {
           htmlFor={"contact_method"}
           label={"PREFERRED CONTACT METHOD"}
           placeholder={"Email"}
-          _onChange={(value: any) => console.log("Selected value:", value)}
+          _onChange={(value: any) => (value: any) => {}}
           selectLabel={"Select Contact Method"}
           data={[
             {
@@ -112,22 +175,20 @@ const BasicInfo = () => {
           label={"EMAIL ADDRESS"}
           placeholder={"bogdan@skyforest.com"}
           type={"email"}
-          name={"email"}
-          _onChange={(value: any) => console.log("Input value:", value)}
+          _onChange={(value: any) => (value: any) => {}}
         />
         <CustomInput
           htmlFor={"phone"}
           label={"PHONE NUMBER"}
           placeholder={"+1 555 244 1139"}
           type={"text"}
-          name={"phone"}
-          _onChange={(value: any) => console.log("Input value:", value)}
+          _onChange={(value: any) => (value: any) => {}}
         />
         <CustomSelect
           htmlFor={"referral"}
           label={"REFERRAL SOURCE"}
           placeholder={"Colleague"}
-          _onChange={(value: any) => console.log("Selected value:", value)}
+          _onChange={(value: any) => (value: any) => {}}
           selectLabel={"Select Referral"}
           data={[
             {
@@ -140,11 +201,11 @@ const BasicInfo = () => {
             },
           ]}
         />
-      </div>
+      </form>
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="lg:text-2xl text-md">Address</h1>
-          <SaveButton />
+          <SaveButton _onSubmit={() => console.log("Clicked")} />
         </div>
         <hr className=" h-0.5 border-t-0 bg-neutral-200  w-full my-3" />
       </div>
@@ -219,7 +280,7 @@ const BasicInfo = () => {
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="lg:text-2xl text-md">Interests and Preferences</h1>
-          <SaveButton />
+          <SaveButton _onSubmit={() => console.log("Clicked")} />
         </div>
         <hr className=" h-0.5 border-t-0 bg-neutral-200  w-full my-3" />
       </div>
