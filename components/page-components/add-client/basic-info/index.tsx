@@ -5,98 +5,117 @@ import SaveButton from "@/components/utils/save-button";
 import CustomSelect from "@/components/utils/select";
 import { data } from "@/config/data";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import axios from "axios";
+import { useToast } from "@/hooks/use-toast";
+import Loader from "@/components/utils/loader";
+import { apiRoutes } from "@/config/apiRoutes";
+import { AddressProps, PersonalInformationProps } from "@/config/types";
+import {
+  addressInitialValue,
+  personalInformationInitialValue,
+} from "@/config/initialValues";
 
-type PersonalInformationInput = {
-  firstName: string;
-  lastName: string;
-  gender: string;
-  dateOfBirth: string;
-  socialSecurityNumber: string;
-  servicePreferences: string;
-  contactMethod: string;
-  emailAddress: string;
-  phoneNumber: string;
-  referralSource: string;
-};
 const BasicInfo = () => {
-  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
-
+  const [isLoading, setIsLoading] = useState({ id: 0, value: false });
+  const { toast } = useToast();
   const [personalInformationData, setPersonalInformationData] =
-    useState<PersonalInformationInput>();
+    useState<PersonalInformationProps>(personalInformationInitialValue);
+  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
+  const [addressData, setAddressData] =
+    useState<AddressProps>(addressInitialValue);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<PersonalInformationInput>({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      gender: "",
-      dateOfBirth: "",
-      socialSecurityNumber: "",
-      servicePreferences: "",
-      contactMethod: "",
-      emailAddress: "",
-      phoneNumber: "",
-      referralSource: "",
-    },
-  });
-
-  const processPersonalInformationForm: SubmitHandler<
-    PersonalInformationInput
-  > = (data) => {
-    setPersonalInformationData(data);
-    console.log(data);
+  const processPersonalInformationForm = async () => {
+    setIsLoading({ id: 0, value: true });
+    try {
+      await axios.post(
+        apiRoutes.personalInformation.POST,
+        personalInformationData
+      );
+      toast({
+        title: "Success",
+        description: "Data uploaded successfully",
+      });
+      setPersonalInformationData(personalInformationInitialValue);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to upload data",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading({ id: 0, value: false });
+    }
   };
+
+  const processAddressForm = async () => {
+    setIsLoading({ id: 1, value: true });
+    try {
+      await axios.post(apiRoutes.address.POST, addressData);
+      toast({
+        title: "Success",
+        description: "Data uploaded successfully",
+      });
+      setAddressData(addressInitialValue);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to upload data",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading({ id: 1, value: false });
+    }
+  };
+
+  const handlePersonalInfoInputChange =
+    (fieldName: keyof typeof personalInformationData) => (value: string) => {
+      setPersonalInformationData((prevFormData) => ({
+        ...prevFormData,
+        [fieldName]: value,
+      }));
+    };
+
+  const handleAddressInputChange =
+    (fieldName: keyof typeof addressData) => (value: string) => {
+      setAddressData((prevFormData) => ({
+        ...prevFormData,
+        [fieldName]: value,
+      }));
+    };
 
   return (
     <div className="flex flex-col lg:space-y-12 space-y-4">
-      <p>Data</p>
-      <p>{JSON.stringify(personalInformationData)}</p>
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="lg:text-2xl text-md">Personal Information</h1>
-          <SaveButton
-            _onSubmit={handleSubmit(processPersonalInformationForm)}
-          />
+          {isLoading.value && isLoading.id === 0 ? (
+            <Loader title={"Uploading..."} />
+          ) : (
+            <SaveButton _onSubmit={processPersonalInformationForm} />
+          )}
         </div>
         <hr className=" h-0.5 border-t-0 bg-neutral-200  w-full my-3" />
       </div>
-      <form className="md:grid 2xl:grid-cols-5 md:grid-cols-2 lg:grid-cols-3 md:gap-2 md:items-start">
+      <div className="md:grid 2xl:grid-cols-5 md:grid-cols-2 lg:grid-cols-3 md:gap-2 md:items-start">
         <CustomInput
-          htmlFor={"firstname"}
+          htmlFor={"firstName"}
           label={"FIRST NAME"}
           placeholder={"First Name"}
           type={"text"}
-          {...register("firstName", { required: "First Name is required" })}
-          _onChange={
-            (value: any) => {}
-            // setFormData((prevFormData) => ({
-            //   ...prevFormData,
-            //   lastName: value,
-            // }))
-          }
+          _onChange={handlePersonalInfoInputChange("firstName")}
         />
         <CustomInput
-          htmlFor={"lastname"}
+          htmlFor={"lastName"}
           label={"LAST NAME"}
           placeholder={"Last Name"}
           type={"text"}
-          _onChange={(value: any) => (value: any) => {}}
+          _onChange={handlePersonalInfoInputChange("lastName")}
         />
         <CustomSelect
           htmlFor={"gender"}
           label={"GENDER"}
           placeholder={"Select Gender"}
-          _onChange={(value: any) =>
-            setFormData((prevFormData) => ({
-              ...prevFormData,
-              gender: value,
-            }))
-          }
+          _onChange={handlePersonalInfoInputChange("gender")}
           selectLabel={"Select Gender"}
           data={[
             {
@@ -114,29 +133,23 @@ const BasicInfo = () => {
           ]}
         />
         <DatePicker
-          htmlFor={"date_of_birth"}
+          htmlFor={"dateOfBirth"}
           label={"DATE OF BIRTH"}
           placeholder={"October 18. 1992"}
-          _onChange={
-            (value: any) => (value: any) => {}
-            // setFormData((prevFormData) => ({
-            //   ...prevFormData,
-            //   dateOfBirth: new Date(value).toLocaleDateString("en-US"),
-            // }))
-          }
+          _onChange={handlePersonalInfoInputChange("dateOfBirth")}
         />
         <CustomInput
-          htmlFor={"social_security"}
+          htmlFor={"socialSecurityNumber"}
           label={"SOCIAL SECURITY NUMBER"}
           placeholder={"987 65 4321"}
           type={"text"}
-          _onChange={(value: any) => (value: any) => {}}
+          _onChange={handlePersonalInfoInputChange("socialSecurityNumber")}
         />
         <CustomSelect
-          htmlFor={"service"}
+          htmlFor={"servicePreferences"}
           label={"SERVICE PREFERENCE"}
           placeholder={"Regular Policy Reviews"}
-          _onChange={(value: any) => (value: any) => {}}
+          _onChange={handlePersonalInfoInputChange("servicePreferences")}
           selectLabel={"Select Service"}
           data={[
             {
@@ -154,10 +167,10 @@ const BasicInfo = () => {
           ]}
         />
         <CustomSelect
-          htmlFor={"contact_method"}
+          htmlFor={"contactMethod"}
           label={"PREFERRED CONTACT METHOD"}
           placeholder={"Email"}
-          _onChange={(value: any) => (value: any) => {}}
+          _onChange={handlePersonalInfoInputChange("contactMethod")}
           selectLabel={"Select Contact Method"}
           data={[
             {
@@ -171,24 +184,24 @@ const BasicInfo = () => {
           ]}
         />
         <CustomInput
-          htmlFor={"email"}
+          htmlFor={"emailAddress"}
           label={"EMAIL ADDRESS"}
           placeholder={"bogdan@skyforest.com"}
           type={"email"}
-          _onChange={(value: any) => (value: any) => {}}
+          _onChange={handlePersonalInfoInputChange("emailAddress")}
         />
         <CustomInput
-          htmlFor={"phone"}
+          htmlFor={"phoneNumber"}
           label={"PHONE NUMBER"}
           placeholder={"+1 555 244 1139"}
           type={"text"}
-          _onChange={(value: any) => (value: any) => {}}
+          _onChange={handlePersonalInfoInputChange("phoneNumber")}
         />
         <CustomSelect
-          htmlFor={"referral"}
+          htmlFor={"referralSource"}
           label={"REFERRAL SOURCE"}
           placeholder={"Colleague"}
-          _onChange={(value: any) => (value: any) => {}}
+          _onChange={handlePersonalInfoInputChange("referralSource")}
           selectLabel={"Select Referral"}
           data={[
             {
@@ -201,44 +214,45 @@ const BasicInfo = () => {
             },
           ]}
         />
-      </form>
+      </div>
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="lg:text-2xl text-md">Address</h1>
-          <SaveButton _onSubmit={() => console.log("Clicked")} />
+          {isLoading.value && isLoading.id === 1 ? (
+            <Loader title={"Uploading..."} />
+          ) : (
+            <SaveButton _onSubmit={processAddressForm} />
+          )}
         </div>
         <hr className=" h-0.5 border-t-0 bg-neutral-200  w-full my-3" />
       </div>
       <div className="md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-2 md:items-start">
         <CustomInput
-          htmlFor={"street"}
+          htmlFor={"streetAddress"}
           label={"STREET ADDRESS"}
           placeholder={"694 Canis Heights Drive"}
           type={"text"}
-          name={"street"}
-          _onChange={(value: any) => console.log("Input value:", value)}
+          _onChange={handleAddressInputChange("streetAddress")}
         />
         <CustomInput
-          htmlFor={"apartment"}
+          htmlFor={"apartmentFloor"}
           label={"APARTMENT/FLOOR"}
           placeholder={"Apt 404"}
           type={"text"}
-          name={"apartment"}
-          _onChange={(value: any) => console.log("Input value:", value)}
+          _onChange={handleAddressInputChange("apartmentFloor")}
         />
         <CustomInput
           htmlFor={"city"}
           label={"CITY"}
           placeholder={"Beverly Hills"}
           type={"text"}
-          name={"city"}
-          _onChange={(value: any) => console.log("Input value:", value)}
+          _onChange={handleAddressInputChange("city")}
         />
         <CustomSelect
           htmlFor={"state"}
           label={"STATE"}
           placeholder={"California (CA)"}
-          _onChange={(value: any) => console.log("Selected value:", value)}
+          _onChange={handleAddressInputChange("state")}
           selectLabel={"Select State"}
           data={[
             {
@@ -252,18 +266,17 @@ const BasicInfo = () => {
           ]}
         />
         <CustomInput
-          htmlFor={"zip"}
+          htmlFor={"zipCode"}
           label={"ZIP CODE"}
           placeholder={"90230"}
           type={"text"}
-          name={"zip"}
-          _onChange={(value: any) => console.log("Input value:", value)}
+          _onChange={handleAddressInputChange("zipCode")}
         />
         <CustomSelect
           htmlFor={"country"}
           label={"COUNTRY"}
           placeholder={"United States"}
-          _onChange={(value: any) => console.log("Selected value:", value)}
+          _onChange={handleAddressInputChange("country")}
           selectLabel={"Select Country"}
           data={[
             {
@@ -280,7 +293,11 @@ const BasicInfo = () => {
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="lg:text-2xl text-md">Interests and Preferences</h1>
-          <SaveButton _onSubmit={() => console.log("Clicked")} />
+          {isLoading.value && isLoading.id === 2 ? (
+            <Loader title={"Uploading..."} />
+          ) : (
+            <SaveButton _onSubmit={processAddressForm} />
+          )}
         </div>
         <hr className=" h-0.5 border-t-0 bg-neutral-200  w-full my-3" />
       </div>

@@ -8,8 +8,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Icon from "@mdi/react";
-import { mdiChevronDown } from "@mdi/js";
 
 interface Props {
   htmlFor: string;

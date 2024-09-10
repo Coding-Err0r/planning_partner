@@ -7,15 +7,13 @@ interface Props {
   label: string;
   placeholder: string;
   type: string;
-  _onChange(value: string): void;
-  register: UseFormRegisterReturn;
+  _onChange(value: string): void | any;
 }
 const CustomInput = ({
   htmlFor,
   label,
   placeholder,
   type,
-  register,
   _onChange,
 }: Props) => {
   return (
@@ -29,9 +27,10 @@ const CustomInput = ({
       <input
         type={type}
         className="h-12 text-10 bg-gray-50 border py-55-rem border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-[#00e0a4] focus:border-[#00e0a4] block w-full p-2.5 focus:outline-[#00e0a4]"
-        onChange={(event: any) => _onChange(event.target.value)}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+          _onChange(event.target.value)
+        }
         placeholder={placeholder}
-        {...register}
       />
     </div>
   );
