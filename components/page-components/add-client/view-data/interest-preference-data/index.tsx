@@ -31,8 +31,8 @@ const InterestPreferenceData = () => {
             <tbody className="bg-white">
               {data.map((item) => (
                 <tr className="text-gray-700" key={item.id}>
-                  {item.interests.map((interest: any) => (
-                    <td className="px-4 py-3 text-sm border">
+                  {item.interests.map((interest: any , index:number) => (
+                    <td className="px-4 py-3 text-sm border" key={index}>
                       <span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm">
                         {interest}
                       </span>

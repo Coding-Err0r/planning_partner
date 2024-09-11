@@ -43,7 +43,7 @@ const FamilyInformation = () => {
           label={"FIRST NAME OF SPOUSE/PARTNER"}
           placeholder={"Spouse/Partner's First Name"}
           type={"text"}
-          name={"partner_firstname"}
+       
           _onChange={(value: any) => console.log("Input value:", value)}
         />
         <CustomInput
@@ -51,7 +51,7 @@ const FamilyInformation = () => {
           label={"LAST NAME OF SPOUSE/PARTNER"}
           placeholder={"Spouse/Partner's Last Name"}
           type={"text"}
-          name={"partner_lastname"}
+         
           _onChange={(value: any) => console.log("Input value:", value)}
         />
         <div className="flex items-center space-x-3 w-fit whitespace-nowrap mt-6 lg:ml-0 ml-1">
