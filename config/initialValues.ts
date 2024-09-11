@@ -19,3 +19,7 @@ export const addressInitialValue = {
   zipCode: "",
   country: "",
 };
+
+export const interestInitialValue = {
+  interest: [],
+};

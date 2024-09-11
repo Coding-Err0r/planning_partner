@@ -31,3 +31,24 @@ export const POST = async (request: Request) => {
     );
   }
 };
+
+export const GET = async () => {
+  try {
+    const client = new MongoClient(uri);
+    await client.connect();
+
+    const db = client.db("planning_partner");
+    const collection = db.collection("planning_partner_collection");
+
+    const data = await collection.find({}).toArray();
+
+    await client.close();
+
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to fetch data" },
+      { status: 500 }
+    );
+  }
+};

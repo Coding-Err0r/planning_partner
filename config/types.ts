@@ -19,3 +19,7 @@ export type AddressProps = {
   zipCode: string;
   country: string;
 };
+
+export type InterestPreferenceProps = {
+  interest: string[];
+};

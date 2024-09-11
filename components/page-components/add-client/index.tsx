@@ -6,6 +6,7 @@ import { data } from "@/config/data";
 import FamilyInformation from "./family-information";
 import BasicInfo from "./basic-info";
 import { useSelector } from "react-redux";
+import ViewData from "./view-data";
 
 const AddClient = () => {
   const activeTab = useSelector((state: any) => state.activeTab);
@@ -16,6 +17,8 @@ const AddClient = () => {
         return <BasicInfo />;
       case "family information":
         return <FamilyInformation />;
+      case "view data":
+        return <ViewData />;
       default:
         return <BasicInfo />;
     }
@@ -29,7 +32,6 @@ const AddClient = () => {
           label={"ADDED BY"}
           placeholder={"David Lovejoy"}
           type={"text"}
-          name={"added_by"}
           _onChange={(value: any) => console.log("Input value:", value)}
         />
         <CustomSelect
